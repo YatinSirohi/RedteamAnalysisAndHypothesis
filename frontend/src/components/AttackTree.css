@@ -1,0 +1,40 @@
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 39vh;
+}
+
+.graph-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.graph-title {
+  font-size: 24px;
+  color: rgb(211, 17, 43);
+  margin-bottom: 20px;
+}
+
+p {
+  margin-bottom: 10px;
+}
+
+input {
+  margin-bottom: 10px;
+}
+
+.graph {
+  margin-top: 80px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 900px;
+}
+
+.clear-button {
+  margin-top: 10px;
+}

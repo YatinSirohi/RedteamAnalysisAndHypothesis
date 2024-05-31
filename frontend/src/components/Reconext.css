@@ -1,0 +1,52 @@
+.reconext-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.cve-data {
+  padding-top: 2vh;
+  border: 10px solid #ccc;
+  padding-left: 5vh;
+  margin-top: 2vh;
+}
+
+.exploit-data {
+  padding-top: 2vh;
+  border: 10px solid #ccc;
+  padding-left: 5vh;
+  margin-top: 2vh;
+}
+
+.reconext-title {
+  font-size: 24px;
+  color: rgb(211, 17, 43);
+  margin-bottom: 20px;
+}
+
+.cve-header {
+  font-size: 24px;
+  color: rgb(211, 17, 43);
+}
+
+.exploit-header {
+  font-size: 24px;
+  color: rgb(211, 17, 43);
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+p {
+  margin: 0;
+}
+
+.reconext-item {
+  padding-top: 2vh;
+  border: 10px solid #ccc;
+  padding-left: 5vh;
+}
+
+.btn {
+  margin-left: 10px;
+}

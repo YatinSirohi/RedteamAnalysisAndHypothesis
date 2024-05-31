@@ -1,0 +1,33 @@
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import ReconInt from "./components/ReconInt";
+import ReconExt from "./components/ReconExt";
+import RepresentState from "./components/RepresentState";
+import AttackTree from "./components/AttackTree";
+import Docs from "./components/Docs";
+import Home from "./components/Home";
+
+function App() {
+  return (
+    <>
+      <Router>
+        <div className="App">
+          <Navbar />
+          <div className="pages">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/Docs" element={<Docs />} />
+              <Route path="/ReconInt" element={<ReconInt />} />
+              <Route path="/ReconExt" element={<ReconExt />} />
+              <Route path="/RepresentState" element={<RepresentState />} />
+              <Route path="/AttackTree" element={<AttackTree />} />
+            </Routes>
+          </div>
+        </div>
+      </Router>
+    </>
+  );
+}
+
+export default App;
