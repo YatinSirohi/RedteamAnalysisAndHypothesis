@@ -8,41 +8,16 @@ import Alert from "react-bootstrap/Alert";
 const AttackTree = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
-  const [graphData, setGraphData] = useState(null);
   const [loadingGraph, setLoadingGraph] = useState(false);
   const [exploitGraphData, setExploitGraphData] = useState(null);
-
   const [showAlert, setShowAlert] = useState(false);
 
   const clearGraph = () => {
-    setGraphData(null);
-    setLoadingGraph(false);
-  };
-
-  const fetchData = async () => {
-    //for state representation graph
-    if (!targetIP || !cidr) {
-      console.log("Target IP and CIDR cannot be blank");
-      setShowAlert(true);
-      return;
-    }
-
-    setLoadingGraph(true);
-    const response = await fetch(
-      `http://localhost:5000/Reconext/graph?target_ip=${targetIP}&cidr=${cidr}`
-    );
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Graph data:", data);
-      setGraphData(data);
-    } else {
-      console.error("Failed to generate graph:", response.statusText);
-    }
+    setExploitGraphData(null);
     setLoadingGraph(false);
   };
 
   const fetchExploitData = async () => {
-    //For exploit graph
     if (!targetIP || !cidr) {
       console.log("Target IP and CIDR cannot be blank");
       setShowAlert(true);
@@ -78,195 +53,128 @@ const AttackTree = () => {
 
   const nodes = [];
   const edges = [];
-
-  if (graphData) {
-    graphData.forEach((hostInfo) => {
-      const { IP_Address, Host_Status, Ports } = hostInfo;
-      nodes.push({ id: IP_Address, label: IP_Address, color: "brown" });
-      nodes.push({ id: Host_Status, label: Host_Status, color: "green" });
-      edges.push({ from: IP_Address, to: Host_Status, label: "Host Status" });
-      Ports.forEach((port) => {
-        const { Port, State, Service, Product, Version } = port;
-        const portId = `${IP_Address}-${Port}`;
-        nodes.push({ id: portId, label: `Port ${Port}`, color: "orange" });
-        edges.push({ from: IP_Address, to: portId, label: "Has Port" });
-        if (State !== undefined) {
-          nodes.push({ id: `state-${portId}`, label: State });
-          edges.push({
-            from: portId,
-            to: `state-${portId}`,
-            label: "Has State",
-          });
-        } else {
-          nodes.push({ id: `state-${portId}`, label: "N/A" });
-          edges.push({
-            from: portId,
-            to: `state-${portId}`,
-            label: "Has State",
-          });
-        }
-        if (Service !== undefined) {
-          nodes.push({ id: `service-${portId}`, label: Service });
-          edges.push({
-            from: portId,
-            to: `service-${portId}`,
-            label: "Has Service",
-          });
-        } else {
-          nodes.push({ id: `service-${portId}`, label: "N/A" });
-          edges.push({
-            from: portId,
-            to: `service-${portId}`,
-            label: "Has Service",
-          });
-        }
-        if (Product !== undefined) {
-          nodes.push({
-            id: `product-${portId}`,
-            label: Product,
-            color: "yellow",
-          });
-          edges.push({
-            from: portId,
-            to: `product-${portId}`,
-            label: "Has Product",
-          });
-        } else {
-          nodes.push({ id: `product-${portId}`, label: "N/A" });
-          edges.push({
-            from: portId,
-            to: `product-${portId}`,
-            label: "Has Product",
-          });
-        }
-        if (Version !== undefined) {
-          nodes.push({ id: `version-${portId}`, label: Version });
-          edges.push({
-            from: portId,
-            to: `version-${portId}`,
-            label: "Has Version",
-          });
-        } else {
-          nodes.push({ id: `version-${portId}`, label: "N/A" });
-          edges.push({
-            from: portId,
-            to: `version-${portId}`,
-            label: "Has Version",
-          });
-        }
-      });
-    });
-  }
   const nodeSet = new Set();
 
   if (exploitGraphData) {
-    exploitGraphData.forEach((exploitItem) => {
-      const {
-        id,
-        cve_id,
-        description,
-        type,
-        platform,
-        verified,
-        port,
-        link,
-      } = exploitItem;
-      const exploitId = targetIP;
+    exploitGraphData.forEach((cveItem) => {
+      const { cve_id, exploits } = cveItem;
+      const cveNodeId = `CVE-${cve_id}`;
 
-      if (!nodeSet.has(exploitId)) {
+      if (!nodeSet.has(cveNodeId)) {
         nodes.push({
-          id: exploitId,
-          label: targetIP,
-          color: "red",
-        });
-        nodeSet.add(exploitId);
-      }
-
-      if (!nodeSet.has(`CVE-${cve_id}-${id}`)) {
-        nodes.push({
-          id: `CVE-${cve_id}-${id}`,
+          id: cveNodeId,
           label: cve_id,
           color: "yellow",
         });
-        nodeSet.add(`CVE-${cve_id}-${id}`);
+        nodeSet.add(cveNodeId);
       }
 
-      edges.push({
-        from: exploitId,
-        to: `CVE-${cve_id}-${id}`,
-        label: "CVE",
-      });
+      exploits.forEach((exploit) => {
+        const {
+          id,
+          description,
+          platform,
+          port,
+          type,
+          verified,
+          link,
+        } = exploit;
+        const exploitNodeId = `Exploit-${id}`;
 
-      if (!nodeSet.has(`description-${id}`)) {
-        nodes.push({ id: `description-${id}`, label: description });
-        nodeSet.add(`description-${id}`);
-      }
+        if (!nodeSet.has(exploitNodeId)) {
+          nodes.push({
+            id: exploitNodeId,
+            label: description,
+            color: "lightblue",
+          });
+          nodeSet.add(exploitNodeId);
+        }
 
-      edges.push({
-        from: `CVE-${cve_id}-${id}`,
-        to: `description-${id}`,
-        label: "Description",
-      });
-
-      if (!nodeSet.has(`type-${id}`)) {
-        nodes.push({ id: `type-${id}`, label: type });
-        nodeSet.add(`type-${id}`);
-      }
-
-      edges.push({
-        from: `CVE-${cve_id}-${id}`,
-        to: `type-${id}`,
-        label: "Type",
-      });
-
-      if (!nodeSet.has(`platform-${id}`)) {
-        nodes.push({ id: `platform-${id}`, label: platform });
-        nodeSet.add(`platform-${id}`);
-      }
-
-      edges.push({
-        from: `CVE-${cve_id}-${id}`,
-        to: `platform-${id}`,
-        label: "Platform",
-      });
-
-      if (!nodeSet.has(`verified-${id}`)) {
-        nodes.push({
-          id: `verified-${id}`,
-          label: verified !== undefined ? verified.toString() : "N/A",
+        edges.push({
+          from: cveNodeId,
+          to: exploitNodeId,
+          label: "Exploit",
         });
-        nodeSet.add(`verified-${id}`);
-      }
 
-      edges.push({
-        from: `CVE-${cve_id}-${id}`,
-        to: `verified-${id}`,
-        label: "Verified",
-      });
+        const platformNodeId = `Platform-${id}`;
+        if (!nodeSet.has(platformNodeId)) {
+          nodes.push({
+            id: platformNodeId,
+            label: `Platform: ${platform}`,
+            color: "green",
+          });
+          nodeSet.add(platformNodeId);
+        }
 
-      if (!nodeSet.has(`port-${id}`)) {
-        nodes.push({
-          id: `port-${id}`,
-          label: port !== undefined ? port.toString() : "N/A",
+        edges.push({
+          from: exploitNodeId,
+          to: platformNodeId,
+          label: "Platform",
         });
-        nodeSet.add(`port-${id}`);
-      }
 
-      edges.push({
-        from: `CVE-${cve_id}-${id}`,
-        to: `port-${id}`,
-        label: "Port",
-      });
+        const portNodeId = `Port-${id}`;
+        if (!nodeSet.has(portNodeId)) {
+          nodes.push({
+            id: portNodeId,
+            label: `Port: ${port}`,
+            color: "orange",
+          });
+          nodeSet.add(portNodeId);
+        }
 
-      if (!nodeSet.has(`link-${id}`)) {
-        nodes.push({ id: `link-${id}`, label: link });
-        nodeSet.add(`link-${id}`);
-      }
+        edges.push({
+          from: exploitNodeId,
+          to: portNodeId,
+          label: "Port",
+        });
 
-      edges.push({
-        from: `CVE-${cve_id}-${id}`,
-        to: `link-${id}`,
-        label: "Link",
+        const typeNodeId = `Type-${id}`;
+        if (!nodeSet.has(typeNodeId)) {
+          nodes.push({
+            id: typeNodeId,
+            label: `Type: ${type}`,
+            color: "purple",
+          });
+          nodeSet.add(typeNodeId);
+        }
+
+        edges.push({
+          from: exploitNodeId,
+          to: typeNodeId,
+          label: "Type",
+        });
+
+        const verifiedNodeId = `Verified-${id}`;
+        if (!nodeSet.has(verifiedNodeId)) {
+          nodes.push({
+            id: verifiedNodeId,
+            label: `Verified: ${verified}`,
+            color: "pink",
+          });
+          nodeSet.add(verifiedNodeId);
+        }
+
+        edges.push({
+          from: exploitNodeId,
+          to: verifiedNodeId,
+          label: "Verified",
+        });
+
+        const linkNodeId = `Link-${id}`;
+        if (!nodeSet.has(linkNodeId)) {
+          nodes.push({
+            id: linkNodeId,
+            label: link,
+            color: "blue",
+          });
+          nodeSet.add(linkNodeId);
+        }
+
+        edges.push({
+          from: exploitNodeId,
+          to: linkNodeId,
+          label: "Link",
+        });
       });
     });
   }
@@ -275,7 +183,7 @@ const AttackTree = () => {
     <>
       <div className="center-container">
         <div className="graph-container">
-          <h1 className="graph-title">Graphical Representation</h1>
+          <h1 className="graph-title">Attack Tree Graphical Representation</h1>
           {showAlert && (
             <Alert
               variant="danger"
@@ -308,13 +216,9 @@ const AttackTree = () => {
             onChange={(e) => setCidr(e.target.value)}
             placeholder="Enter CIDR"
           />
-          <Button type="submit" size="sm" onClick={fetchData}>
-            Generate Graph
-          </Button>
           <Button
             type="submit"
             size="sm"
-            variant="warning"
             onClick={fetchExploitData}
             style={{ marginLeft: "1vh", marginTop: "1vh" }}
           >
@@ -326,7 +230,7 @@ const AttackTree = () => {
             <Loader />
           </div>
         )}
-        {(graphData || exploitGraphData) && (
+        {exploitGraphData && (
           <div className="graph">
             <Graph
               graph={{ nodes, edges }}
@@ -335,11 +239,18 @@ const AttackTree = () => {
             />
           </div>
         )}
-        {(graphData || exploitGraphData) && (
+        {exploitGraphData && (
           <div className="clear-button">
             <Button size="sm" variant="danger" onClick={clearGraph}>
               Clear Graph
             </Button>
+          <p style={{marginTop:"2rem"}}>
+            Notes:<br/>
+            1. The above graph is for IP: {targetIP}.<br/>
+            2. Please zoom to see each graph nodes.<br/>
+            3. Each CVE is connected to exploits found in Offsec ExploitDB.<br/>
+            4. CVE for which Exploits are not found are shown as separated graph nodes.<br/>
+          </p>
           </div>
         )}
       </div>
@@ -348,61 +259,3 @@ const AttackTree = () => {
 };
 
 export default AttackTree;
-
-//Below code is for neo4j graph generation--- Not using
-// import React, { useState } from "react";
-// import Button from "react-bootstrap/Button";
-// import "./AttackTree.css";
-
-// const AttackTree = () => {
-//   const [targetIP, setTargetIP] = useState("");
-//   const [cidr, setCidr] = useState("");
-
-//   const fetchData = async () => {
-//     const response = await fetch(
-//       `http://localhost:5000/Reconext/Neo4j?target_ip=${targetIP}&cidr=${cidr}`
-//     );
-//     if (response.ok) {
-//       console.log("Graph generated successfully!");
-//     } else {
-//       console.error("Failed to generate graph:", response.statusText);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <div className="center-container">
-//         <div className="graph-container">
-//           <h1 className="graph-title">Graphical representation</h1>
-//           <p>
-//             <strong>
-//               Enter the IP address and CIDR to generate the graph having
-//               relationships between ports, vulnerabality, exploits etc
-//             </strong>
-//           </p>
-//           <input
-//             type="text"
-//             value={targetIP}
-//             onChange={(e) => setTargetIP(e.target.value)}
-//             placeholder="Enter target IP"
-//           />
-//           <text>
-//             <strong> /</strong>
-//           </text>
-//           <input
-//             style={{ marginLeft: "1vh" }}
-//             type="number"
-//             value={cidr}
-//             onChange={(e) => setCidr(e.target.value)}
-//             placeholder="Enter CIDR"
-//           />
-//           <Button type="submit" size="sm" onClick={fetchData}>
-//             Generate Graph
-//           </Button>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default AttackTree;

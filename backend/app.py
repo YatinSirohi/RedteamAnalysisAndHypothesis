@@ -159,12 +159,16 @@ def graph_of_exploit():
     cve_ids = reconExternalp2.get_cve_ids_from_scan_results(scan_results)
     exploit_results = reconExternalp2.search_exploits_for_cves(cve_ids)
     exploit_list = []
-    for cve_id, exploits in exploit_results.items():
-        if exploits:
-            print(f"Exploits found for CVE {cve_id}:")
-            # exploit_json_output = json.dumps(exploits)
-            exploit_list.append(exploits)
-            return exploit_list
+    # for cve_id, exploits in exploit_results.items():
+    #     if exploits not in exploit_list:
+    #         print("Exploits found for CVE ",cve_id,": ",exploits)
+    #         # exploit_json_output = json.dumps(exploits)
+    #         exploit_list.append(exploits)
+    # print("\n\nExploit list results for graph: ", exploit_list)
+    # return exploit_list
+    for key, value in exploit_results.items():
+        exploit_list.append({"cve_id": key, "exploits": value})
+    return exploit_list
 
 
 if __name__ == "__main__":

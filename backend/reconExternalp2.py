@@ -27,28 +27,63 @@ def search_cve(keyword):
 
 
 def search_exploits_for_cves(cve_ids):
-    exploit_results = {}
-    try:
-        for cve_id in cve_ids:
-            print(f"Searching exploits for CVE: {cve_id}")
-            exploits = pyxploitdb.searchCVE(cve_id)
-            exploit_results[cve_id] = []
-            for exploit in exploits:
-                exploit_info = {
-                    "id": exploit.id,
-                    "cve_id": cve_id,
-                    "description": exploit.description,
-                    "type": exploit.type,
-                    "platform": exploit.platform,
-                    "verified": exploit.verified,
-                    "port": exploit.port,
-                    "link": exploit.link,
-                }
-                exploit_results[cve_id].append(exploit_info)
-        return exploit_results
-    except Exception as e:
-        print(f"An error occurred during exploit search: {e}")
-        return {}
+    # exploit_results = {}
+    # try:
+    #     for cve_id in cve_ids:
+    #         print(f"Searching exploits for CVE: {cve_id}")
+    #         exploits = pyxploitdb.searchCVE(cve_id)
+    #         exploit_results[cve_id] = []
+    #         for exploit in exploits:
+    #             exploit_info = {
+    #                 "id": exploit.id,
+    #                 "cve_id": cve_id,
+    #                 "description": exploit.description,
+    #                 "type": exploit.type,
+    #                 "platform": exploit.platform,
+    #                 "verified": exploit.verified,
+    #                 "port": exploit.port,
+    #                 "link": exploit.link,
+    #             }
+    #             exploit_results[cve_id].append(exploit_info)
+    #     print("Exploit results: ", exploit_results)             # Fix the duplicate entry issue
+    #     return exploit_results
+    # except Exception as e:
+    #     print(f"An error occurred during exploit search: {e}")
+    #     return {}
+    exploit_results = {} 
+    seen_exploits = set() 
+    cves = []
+    try: 
+        for cve_id in cve_ids: 
+            print(f"Searching exploits for CVE: {cve_id}") 
+            exploits = pyxploitdb.searchCVE(cve_id) 
+            exploit_results[cve_id] = [] 
+
+            for exploit in exploits: 
+                exploit_id = exploit.id 
+                exploit_key = (cve_id, exploit_id) 
+                # if exploit_key in seen_exploits:
+                #     continue      
+                if exploit_results.values == []:
+                    continue
+                    # seen_exploits.add(exploit_key)
+                    # cves.append(cve_id) 
+                exploit_info = { 
+                    'id': exploit.id, 
+                    'description': exploit.description, 
+                    'type': exploit.type, 
+                    'platform': exploit.platform, 
+                    'verified': exploit.verified, 
+                    'port': exploit.port, 
+                    'link': exploit.link 
+                } 
+                exploit_results[cve_id].append(exploit_info) 
+        print("Exploit results: ", exploit_results)
+        return exploit_results 
+    
+    except Exception as e: 
+        print(f"An error occurred during exploit search: {e}") 
+        return {} 
 
 
 def get_cve_ids_from_scan_results(scan_results):
