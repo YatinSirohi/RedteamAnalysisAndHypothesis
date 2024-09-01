@@ -4,6 +4,7 @@ import nvdlib
 import pyxploitdb
 from neo4j import GraphDatabase
 import time
+from collections import defaultdict
 
 
 def search_cve(keyword):
@@ -52,7 +53,7 @@ def search_exploits_for_cves(cve_ids):
     #     return {}
     exploit_results = {} 
     seen_exploits = set() 
-    cves = []
+
     try: 
         for cve_id in cve_ids: 
             print(f"Searching exploits for CVE: {cve_id}") 
@@ -62,12 +63,11 @@ def search_exploits_for_cves(cve_ids):
             for exploit in exploits: 
                 exploit_id = exploit.id 
                 exploit_key = (cve_id, exploit_id) 
-                # if exploit_key in seen_exploits:
-                #     continue      
-                if exploit_results.values == []:
-                    continue
-                    # seen_exploits.add(exploit_key)
-                    # cves.append(cve_id) 
+                if exploit_key in seen_exploits:
+                    continue      
+
+                seen_exploits.add(exploit_key)
+      
                 exploit_info = { 
                     'id': exploit.id, 
                     'description': exploit.description, 
@@ -143,3 +143,49 @@ def perform_nmap_scan(network_id, cidr):
         scan_results.append(host_info)
 
     return scan_results
+
+#-----------------------------------------------------Below code for hypothesis------------------------------------------
+
+def create_cve_exploit_mapping(scan_results, exploit_results):
+    cve_exploit_mapping = [
+        {"product": port_info["Product"], "version": port_info["Version"], "cve_id": cve_id, "exploit": exploit}
+        for cve_id, exploits in exploit_results.items()
+        for exploit in exploits
+        for host_info in scan_results
+        for port_info in host_info["Ports"]
+    ]
+    return cve_exploit_mapping
+
+def generate_attack_tree(scan_results, cve_exploit_mapping):
+    attack_tree = defaultdict(list)
+    for host_info in scan_results:
+        ip = host_info.get("IP Address", "")
+        for port_info in host_info.get("Ports", []):
+            service = port_info.get("Service", "")
+            product = port_info.get("Product", "")
+            version = port_info.get("Version", "")
+            
+            for cve_exploit in cve_exploit_mapping:
+                if cve_exploit["product"] == product and cve_exploit["version"] == version:
+                    attack_tree[ip].append({
+                        "Service": service,
+                        "Product": product,
+                        "Version": version,
+                        "CVE": cve_exploit["cve_id"],
+                        "Exploit": cve_exploit["exploit"]
+                    })
+    return attack_tree
+
+def generate_hypotheses(attack_tree):
+    hypotheses = []
+    for ip, attacks in attack_tree.items():
+        for attack in attacks:
+            # Safely retrieve CVE and Exploit information
+            cve = attack.get("CVE", "unknown CVE")
+            exploit = attack.get("Exploit", "unknown exploit")
+            
+            hypothesis = {
+                "Hypothesis": f"Compromise possible on {ip} through the exploit - {exploit} exploiting the vuilnerability - {cve}"
+            }
+            hypotheses.append(hypothesis)
+    return hypotheses

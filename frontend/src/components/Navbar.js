@@ -17,6 +17,7 @@ function NavBar() {
             <Nav.Link href="/ReconExt">Recon-External</Nav.Link>
             <Nav.Link href="/RepresentState">Represent-State</Nav.Link>
             <Nav.Link href="/AttackTree">Attack-Tree-Generate</Nav.Link>
+            <Nav.Link href="/Hypothesis">Hypothesis</Nav.Link>
             {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">

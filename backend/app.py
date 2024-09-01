@@ -170,6 +170,20 @@ def graph_of_exploit():
         exploit_list.append({"cve_id": key, "exploits": value})
     return exploit_list
 
+@app.route("/Reconext/hypothesis", methods=["GET"])
+def hypthesis():
+    target_ip = request.args.get("target_ip")
+    cidr = request.args.get("cidr")
+    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
+    cve_ids = reconExternalp2.get_cve_ids_from_scan_results(scan_results)
+    exploit_results = reconExternalp2.search_exploits_for_cves(cve_ids)
+    cve_exploit_mapping = reconExternalp2.create_cve_exploit_mapping(scan_results, exploit_results)
+    attack_tree = reconExternalp2.generate_attack_tree(scan_results, cve_exploit_mapping)
+    hypothesis = reconExternalp2.generate_hypotheses(attack_tree)
+    print("\nGenerated Hypotheses:")
+    print(json.dumps(hypothesis, indent=4))
+    return hypothesis
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

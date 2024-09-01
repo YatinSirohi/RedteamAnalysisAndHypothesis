@@ -7,6 +7,7 @@ import RepresentState from "./components/RepresentState";
 import AttackTree from "./components/AttackTree";
 import Docs from "./components/Docs";
 import Home from "./components/Home";
+import Hypothesis from "./components/Hypothesis";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               <Route path="/ReconExt" element={<ReconExt />} />
               <Route path="/RepresentState" element={<RepresentState />} />
               <Route path="/AttackTree" element={<AttackTree />} />
+              <Route path="/Hypothesis" element={<Hypothesis />} />
             </Routes>
           </div>
         </div>

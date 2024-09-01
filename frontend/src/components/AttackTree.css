@@ -17,7 +17,8 @@
 .graph-title {
   font-size: 24px;
   color: rgb(211, 17, 43);
-  margin-bottom: 20px;
+  margin-top: 5rem;
+  position: sticky;
 }
 
 p {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
+import Badge from 'react-bootstrap/Badge';
 import "./AttackTree.css";
 import Graph from "react-graph-vis";
 import Loader from "./Loader";
@@ -100,7 +101,7 @@ const AttackTree = () => {
         if (!nodeSet.has(platformNodeId)) {
           nodes.push({
             id: platformNodeId,
-            label: `Platform: ${platform}`,
+            label: `${platform}`,
             color: "green",
           });
           nodeSet.add(platformNodeId);
@@ -116,7 +117,7 @@ const AttackTree = () => {
         if (!nodeSet.has(portNodeId)) {
           nodes.push({
             id: portNodeId,
-            label: `Port: ${port}`,
+            label: `${port}`,
             color: "orange",
           });
           nodeSet.add(portNodeId);
@@ -132,7 +133,7 @@ const AttackTree = () => {
         if (!nodeSet.has(typeNodeId)) {
           nodes.push({
             id: typeNodeId,
-            label: `Type: ${type}`,
+            label: `${type}`,
             color: "purple",
           });
           nodeSet.add(typeNodeId);
@@ -165,7 +166,7 @@ const AttackTree = () => {
           nodes.push({
             id: linkNodeId,
             label: link,
-            color: "blue",
+            color: "orange",
           });
           nodeSet.add(linkNodeId);
         }
@@ -228,6 +229,7 @@ const AttackTree = () => {
         {loadingGraph && (
           <div>
             <Loader />
+            <p style={{marginTop:"1rem"}}>Generating graph, please wait...</p>
           </div>
         )}
         {exploitGraphData && (
@@ -245,7 +247,7 @@ const AttackTree = () => {
               Clear Graph
             </Button>
           <p style={{marginTop:"2rem"}}>
-            Notes:<br/>
+          <Badge bg="success">NOTES:</Badge><br/>
             1. The above graph is for IP: {targetIP}.<br/>
             2. Please zoom to see each graph nodes.<br/>
             3. Each CVE is connected to exploits found in Offsec ExploitDB.<br/>
