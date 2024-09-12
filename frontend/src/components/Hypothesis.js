@@ -9,16 +9,28 @@ const Hypothesis = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [hypothesisData, setHypothesisData] = useState(null);
 
   const clearData = () => {
-    return;
+    setHypothesisData(null);
   };
 
-  const fetchHypothesis = () => {
+  const fetchHypothesis = async () => {
     if (!targetIP || !cidr) {
       console.log("Target IP is empty");
       setShowAlert(true);
       return;
+    }
+
+    const response = await fetch(
+      `http://localhost:5000/Reconext/hypothesis?target_ip=${targetIP}&cidr=${cidr}`
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Hypothesis data:", data);
+      setHypothesisData(data);
+    } else {
+      console.error("Failed to generate exploit graph:", response.statusText);
     }
   };
 
@@ -33,6 +45,7 @@ const Hypothesis = () => {
             dismissible
           >
             <Alert.Heading>Target IP and CIDR cannot be blank</Alert.Heading>
+
             <p>Please enter target IP and CIDR and try again!</p>
           </Alert>
         )}
@@ -70,6 +83,15 @@ const Hypothesis = () => {
         <Button variant="danger" size="sm" onClick={clearData}>
           Clear data
         </Button>
+        {hypothesisData && (
+          <div className="hypothesis-list">
+            {hypothesisData.map((item, index) => (
+              <div key={index} className="hypothesis-item">
+                <strong>Hypothesis {index + 1}:</strong> {item.Hypothesis}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
