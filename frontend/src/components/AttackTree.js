@@ -12,6 +12,7 @@ const AttackTree = () => {
   const [loadingGraph, setLoadingGraph] = useState(false);
   const [exploitGraphData, setExploitGraphData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [grapherror, setGrapherror] = useState(false)
 
   const clearGraph = () => {
     setExploitGraphData(null);
@@ -35,6 +36,7 @@ const AttackTree = () => {
       setExploitGraphData(exploitData);
     } else {
       console.error("Failed to generate exploit graph:", response.statusText);
+      setGrapherror(true)
     }
     setLoadingGraph(false);
   };
@@ -241,6 +243,7 @@ const AttackTree = () => {
             />
           </div>
         )}
+        {grapherror && <p>Cannot retreive data</p>}
         {exploitGraphData && (
           <div className="clear-button">
             <Button size="sm" variant="danger" onClick={clearGraph}>
