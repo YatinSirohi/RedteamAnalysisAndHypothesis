@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import reconExternalp2
 import json
-
+import validatehypo
 
 app = Flask(__name__)
 CORS(app)
@@ -13,7 +13,7 @@ def reconExtContent():
     target_ip = request.args.get("target_ip")
     cidr = request.args.get("cidr")
     print("starting scan")
-    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
     scan_results_json = json.dumps(scan_results)
     data = {"content": scan_results_json}
     return data
@@ -23,13 +23,13 @@ def reconExtContent():
 def reconCveContent():
     target_ip = request.args.get("target_ip")
     cidr = request.args.get("cidr")
-    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
     print("Getting Cve")
     for host_info in scan_results:
         for port_info in host_info["Ports"]:
             product = port_info["Product"]
             if product:
-                cve_results = reconExternalp2.search_cve(product)
+                cve_results = validatehypo.search_cve(product)
                 if cve_results:
                     cve_json_output = json.dumps(cve_results)
                     cve = {"cve": [cve_json_output]}
@@ -42,7 +42,7 @@ def reconExplotContent():
     cidr = request.args.get("cidr")
     scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
     print("Getting exploits")
-    cve_ids = reconExternalp2.get_cve_ids_from_scan_results(scan_results)
+    cve_ids = reconExternalp2.get_cve_ids_and_descriptions(scan_results)
     exploit_results = reconExternalp2.search_exploits_for_cves(cve_ids)
     for cve_id, exploits in exploit_results.items():
         if exploits:
@@ -170,16 +170,16 @@ def graph_of_exploit():
         exploit_list.append({"cve_id": key, "exploits": value})
     return exploit_list
 
+
 @app.route("/Reconext/hypothesis", methods=["GET"])
 def hypthesis():
     target_ip = request.args.get("target_ip")
     cidr = request.args.get("cidr")
-    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
-    cve_ids = reconExternalp2.get_cve_ids_from_scan_results(scan_results)
-    exploit_results = reconExternalp2.search_exploits_for_cves(cve_ids)
-    cve_exploit_mapping = reconExternalp2.create_cve_exploit_mapping(scan_results, exploit_results)
-    attack_tree = reconExternalp2.generate_attack_tree(scan_results, cve_exploit_mapping)
-    hypothesis = reconExternalp2.generate_hypotheses(attack_tree)
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
+    cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
+    exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
+    attack_tree = validatehypo.generate_attack_tree(exploit_results)
+    hypothesis = validatehypo.generate_hypotheses(attack_tree)
     print("\nGenerated Hypotheses:")
     print(json.dumps(hypothesis, indent=4))
     return hypothesis

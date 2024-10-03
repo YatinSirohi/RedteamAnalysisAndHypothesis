@@ -4,15 +4,19 @@ import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Alert from "react-bootstrap/Alert";
 import "./Hypothesis.css";
+import Loader from "./Loader";
+import "./HypothesisLoader.css";
 
 const Hypothesis = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [hypothesisData, setHypothesisData] = useState(null);
+  const [gethypothesis, setGethypothesis] = useState(false);
 
   const clearData = () => {
     setHypothesisData(null);
+    setGethypothesis(false);
   };
 
   const fetchHypothesis = async () => {
@@ -21,13 +25,14 @@ const Hypothesis = () => {
       setShowAlert(true);
       return;
     }
-
+    setGethypothesis(true);
     const response = await fetch(
       `http://localhost:5000/Reconext/hypothesis?target_ip=${targetIP}&cidr=${cidr}`
     );
     if (response.ok) {
       const data = await response.json();
       console.log("Hypothesis data:", data);
+      setGethypothesis(false);
       setHypothesisData(data);
     } else {
       console.error("Failed to generate exploit graph:", response.statusText);
@@ -83,6 +88,12 @@ const Hypothesis = () => {
         <Button variant="danger" size="sm" onClick={clearData}>
           Clear data
         </Button>
+        {gethypothesis && (
+          <div className="hypothesis-loader">
+            <Loader />
+            <p>Generating Hypotheses, please wait...</p>
+          </div>
+        )}
         {hypothesisData && (
           <div className="hypothesis-list">
             {hypothesisData.map((item, index) => (

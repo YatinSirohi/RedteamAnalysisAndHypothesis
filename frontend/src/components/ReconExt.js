@@ -252,6 +252,8 @@ const ReconExt = () => {
                   <strong>Vulnerability Status:</strong> {cveItem.vulnStatus}
                   <br />
                   <strong>Score:</strong> {cveItem.score.join(", ")}
+                  <br />
+                  <strong>Description:</strong> {cveItem.description}
                 </li>
               ))}
             </ul>

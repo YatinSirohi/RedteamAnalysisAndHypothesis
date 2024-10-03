@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import Badge from 'react-bootstrap/Badge';
+import Badge from "react-bootstrap/Badge";
 import "./AttackTree.css";
 import Graph from "react-graph-vis";
 import Loader from "./Loader";
 import Alert from "react-bootstrap/Alert";
+import "./Loader.css";
 
 const AttackTree = () => {
   const [targetIP, setTargetIP] = useState("");
@@ -12,7 +13,7 @@ const AttackTree = () => {
   const [loadingGraph, setLoadingGraph] = useState(false);
   const [exploitGraphData, setExploitGraphData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
-  const [grapherror, setGrapherror] = useState(false)
+  const [grapherror, setGrapherror] = useState(false);
 
   const clearGraph = () => {
     setExploitGraphData(null);
@@ -36,7 +37,7 @@ const AttackTree = () => {
       setExploitGraphData(exploitData);
     } else {
       console.error("Failed to generate exploit graph:", response.statusText);
-      setGrapherror(true)
+      setGrapherror(true);
     }
     setLoadingGraph(false);
   };
@@ -229,9 +230,8 @@ const AttackTree = () => {
           </Button>
         </div>
         {loadingGraph && (
-          <div>
+          <div className="loader-container">
             <Loader />
-            <p style={{marginTop:"1rem"}}>Generating graph, please wait...</p>
           </div>
         )}
         {exploitGraphData && (
@@ -249,13 +249,18 @@ const AttackTree = () => {
             <Button size="sm" variant="danger" onClick={clearGraph}>
               Clear Graph
             </Button>
-          <p style={{marginTop:"2rem"}}>
-          <Badge bg="success">NOTES:</Badge><br/>
-            1. The above graph is for IP: {targetIP}.<br/>
-            2. Please zoom to see each graph nodes.<br/>
-            3. Each CVE is connected to exploits found in Offsec ExploitDB.<br/>
-            4. CVE for which Exploits are not found are shown as separated graph nodes.<br/>
-          </p>
+            <p style={{ marginTop: "2rem" }}>
+              <Badge bg="success">NOTES:</Badge>
+              <br />
+              1. The above graph is for IP: {targetIP}.<br />
+              2. Please zoom to see each graph nodes.
+              <br />
+              3. Each CVE is connected to exploits found in Offsec ExploitDB.
+              <br />
+              4. CVE for which Exploits are not found are shown as separated
+              graph nodes.
+              <br />
+            </p>
           </div>
         )}
       </div>
