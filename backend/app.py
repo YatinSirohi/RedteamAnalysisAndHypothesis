@@ -135,7 +135,7 @@ def graph_of_state():
     target_ip = request.args.get("target_ip")
     cidr = request.args.get("cidr")
     print("started scan")
-    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
 
     formatted_host_info_list = []
     for host_info in scan_results:
