@@ -53,6 +53,60 @@ def reconExploitContent():
         return jsonify({"exploit": {}})
 
 
+@app.route("/Reconext/graph", methods=["GET"])
+def graph_of_state():
+
+    target_ip = request.args.get("target_ip")
+    cidr = request.args.get("cidr")
+    print("started scan")
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
+
+    formatted_host_info_list = []
+    for host_info in scan_results:
+        formatted_host_info = {
+            "IP_Address": host_info["IP_Address"],
+            "Host_Status": host_info["Host_Status"],
+            "Ports": host_info["Ports"],
+            "OS_CPE": host_info["OS_CPE"],
+            "Aggressive_OS_guesses": host_info["Aggressive_OS_guesses"],
+        }
+        formatted_host_info_list.append(formatted_host_info)
+    print("executed")
+    return formatted_host_info_list
+
+
+@app.route("/Reconext/exploit-graph", methods=["GET"])
+def graph_of_exploit():
+    target_ip = request.args.get("target_ip")
+    cidr = request.args.get("cidr")
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
+    print("Getting exploits")
+    cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
+    exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
+    attack_tree_list = []
+    # exploit_list = []
+    # for key, value in exploit_results.items():
+    #     exploit_list.append({"cve_id": key, "exploits": value})
+    # return exploit_list
+    attack_tree = validatehypo.generate_attack_tree(exploit_results)
+    # attack_tree_json = json.dumps(attack_tree)
+    attack_tree_list.append(attack_tree)
+    return attack_tree_list
+
+@app.route("/Reconext/hypothesis", methods=["GET"])
+def hypthesis():
+    target_ip = request.args.get("target_ip")
+    cidr = request.args.get("cidr")
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
+    cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
+    exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
+    attack_tree = validatehypo.generate_attack_tree(exploit_results)
+    hypothesis = validatehypo.generate_hypotheses(attack_tree)
+    print("\nGenerated Hypotheses:")
+    print(json.dumps(hypothesis, indent=4))
+    return hypothesis
+
+
 # -------------------------------Below function is to get scan resule in a json file---------------------
 
 
@@ -127,63 +181,6 @@ def commonJson():
         json.dump(exploit_formatted, f)
 
     return "JSON files created"
-
-
-@app.route("/Reconext/graph", methods=["GET"])
-def graph_of_state():
-
-    target_ip = request.args.get("target_ip")
-    cidr = request.args.get("cidr")
-    print("started scan")
-    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
-
-    formatted_host_info_list = []
-    for host_info in scan_results:
-        formatted_host_info = {
-            "IP_Address": host_info["IP_Address"],
-            "Host_Status": host_info["Host_Status"],
-            "Ports": host_info["Ports"],
-            "OS_CPE": host_info["OS_CPE"],
-            "Aggressive_OS_guesses": host_info["Aggressive_OS_guesses"],
-        }
-        formatted_host_info_list.append(formatted_host_info)
-    print("executed")
-    return formatted_host_info_list
-
-
-@app.route("/Reconext/exploit-graph", methods=["GET"])
-def graph_of_exploit():
-    target_ip = request.args.get("target_ip")
-    cidr = request.args.get("cidr")
-    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
-    print("Getting exploits")
-    cve_ids = reconExternalp2.get_cve_ids_from_scan_results(scan_results)
-    exploit_results = reconExternalp2.search_exploits_for_cves(cve_ids)
-    exploit_list = []
-    # for cve_id, exploits in exploit_results.items():
-    #     if exploits not in exploit_list:
-    #         print("Exploits found for CVE ",cve_id,": ",exploits)
-    #         # exploit_json_output = json.dumps(exploits)
-    #         exploit_list.append(exploits)
-    # print("\n\nExploit list results for graph: ", exploit_list)
-    # return exploit_list
-    for key, value in exploit_results.items():
-        exploit_list.append({"cve_id": key, "exploits": value})
-    return exploit_list
-
-
-@app.route("/Reconext/hypothesis", methods=["GET"])
-def hypthesis():
-    target_ip = request.args.get("target_ip")
-    cidr = request.args.get("cidr")
-    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
-    cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
-    exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
-    attack_tree = validatehypo.generate_attack_tree(exploit_results)
-    hypothesis = validatehypo.generate_hypotheses(attack_tree)
-    print("\nGenerated Hypotheses:")
-    print(json.dumps(hypothesis, indent=4))
-    return hypothesis
 
 
 if __name__ == "__main__":

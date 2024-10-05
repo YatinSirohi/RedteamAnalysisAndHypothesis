@@ -34,7 +34,7 @@ const AttackTree = () => {
     if (response.ok) {
       const exploitData = await response.json();
       console.log("Exploit Graph data:", exploitData);
-      setExploitGraphData(exploitData);
+      setExploitGraphData(exploitData[0][targetIP]); // Adjusted for your data structure
     } else {
       console.error("Failed to generate exploit graph:", response.statusText);
       setGrapherror(true);
@@ -53,6 +53,13 @@ const AttackTree = () => {
     physics: {
       enabled: true,
     },
+    repulsion: {
+      nodeDistance: 200,
+      centralGravity: 0.1,
+      springLength: 200,
+      springConstant: 0.05,
+    },
+    solver: "repulsion",
   };
 
   const nodes = [];
@@ -61,35 +68,88 @@ const AttackTree = () => {
 
   if (exploitGraphData) {
     exploitGraphData.forEach((cveItem) => {
-      const { cve_id, exploits } = cveItem;
-      const cveNodeId = `CVE-${cve_id}`;
+      const {
+        CVE,
+        // "CVE Description": description,
+        // IP,
+        Product,
+        Service,
+        Exploits,
+      } = cveItem;
 
+      const cveNodeId = `CVE-${CVE}`;
+      // Create CVE node
       if (!nodeSet.has(cveNodeId)) {
         nodes.push({
           id: cveNodeId,
-          label: cve_id,
+          label: CVE,
           color: "yellow",
         });
         nodeSet.add(cveNodeId);
       }
 
-      exploits.forEach((exploit) => {
+      // Create node for CVE description
+      // nodes.push({
+      //   id: `Desc-${CVE}`,
+      //   label: description,
+      //   color: "lightgray",
+      // });
+
+      // edges.push({
+      //   from: cveNodeId,
+      //   to: `Desc-${CVE}`,
+      //   label: "Description",
+      // });
+
+      const productNodeId = `Product-${CVE}`;
+      if (!nodeSet.has(productNodeId)) {
+        nodes.push({
+          id: productNodeId,
+          label: Product,
+          color: "lightgreen",
+        });
+        // nodeSet.add(productNodeId);
+      }
+
+      edges.push({
+        from: cveNodeId,
+        to: productNodeId,
+        label: "Product",
+      });
+
+      // Create node for Service
+      const serviceNodeId = `Service-${CVE}`;
+      if (!nodeSet.has(serviceNodeId)) {
+        nodes.push({
+          id: serviceNodeId,
+          label: Service,
+          color: "lightblue",
+        });
+        // nodeSet.add(serviceNodeId);
+      }
+
+      edges.push({
+        from: cveNodeId,
+        to: serviceNodeId,
+        label: "Service",
+      });
+
+      // Process exploits if they exist
+      Exploits.forEach((exploit) => {
         const {
-          id,
-          description,
-          platform,
-          port,
-          type,
-          verified,
-          link,
+          "Exploit ID": id,
+          "Exploit Description": exploitDescription,
+          Link,
+          Type,
         } = exploit;
         const exploitNodeId = `Exploit-${id}`;
 
+        // Create exploit node
         if (!nodeSet.has(exploitNodeId)) {
           nodes.push({
             id: exploitNodeId,
-            label: description,
-            color: "lightblue",
+            label: exploitDescription,
+            color: "orange",
           });
           nodeSet.add(exploitNodeId);
         }
@@ -100,76 +160,13 @@ const AttackTree = () => {
           label: "Exploit",
         });
 
-        const platformNodeId = `Platform-${id}`;
-        if (!nodeSet.has(platformNodeId)) {
-          nodes.push({
-            id: platformNodeId,
-            label: `${platform}`,
-            color: "green",
-          });
-          nodeSet.add(platformNodeId);
-        }
-
-        edges.push({
-          from: exploitNodeId,
-          to: platformNodeId,
-          label: "Platform",
-        });
-
-        const portNodeId = `Port-${id}`;
-        if (!nodeSet.has(portNodeId)) {
-          nodes.push({
-            id: portNodeId,
-            label: `${port}`,
-            color: "orange",
-          });
-          nodeSet.add(portNodeId);
-        }
-
-        edges.push({
-          from: exploitNodeId,
-          to: portNodeId,
-          label: "Port",
-        });
-
-        const typeNodeId = `Type-${id}`;
-        if (!nodeSet.has(typeNodeId)) {
-          nodes.push({
-            id: typeNodeId,
-            label: `${type}`,
-            color: "purple",
-          });
-          nodeSet.add(typeNodeId);
-        }
-
-        edges.push({
-          from: exploitNodeId,
-          to: typeNodeId,
-          label: "Type",
-        });
-
-        const verifiedNodeId = `Verified-${id}`;
-        if (!nodeSet.has(verifiedNodeId)) {
-          nodes.push({
-            id: verifiedNodeId,
-            label: `Verified: ${verified}`,
-            color: "pink",
-          });
-          nodeSet.add(verifiedNodeId);
-        }
-
-        edges.push({
-          from: exploitNodeId,
-          to: verifiedNodeId,
-          label: "Verified",
-        });
-
+        // Create node for Link
         const linkNodeId = `Link-${id}`;
         if (!nodeSet.has(linkNodeId)) {
           nodes.push({
             id: linkNodeId,
-            label: link,
-            color: "orange",
+            label: Link,
+            color: "red",
           });
           nodeSet.add(linkNodeId);
         }
@@ -178,6 +175,19 @@ const AttackTree = () => {
           from: exploitNodeId,
           to: linkNodeId,
           label: "Link",
+        });
+
+        const typeNodeId = `Type-${id}`;
+        nodes.push({
+          id: typeNodeId,
+          label: Type,
+          color: "#8a8d64",
+        });
+
+        edges.push({
+          from: exploitNodeId,
+          to: typeNodeId,
+          label: "Type",
         });
       });
     });
