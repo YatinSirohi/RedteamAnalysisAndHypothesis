@@ -37,19 +37,20 @@ def reconCveContent():
 
 
 @app.route("/Reconext/Exploit", methods=["GET"])
-def reconExplotContent():
+def reconExploitContent():
     target_ip = request.args.get("target_ip")
     cidr = request.args.get("cidr")
-    scan_results = reconExternalp2.perform_nmap_scan(target_ip, cidr)
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
     print("Getting exploits")
-    cve_ids = reconExternalp2.get_cve_ids_and_descriptions(scan_results)
-    exploit_results = reconExternalp2.search_exploits_for_cves(cve_ids)
-    for cve_id, exploits in exploit_results.items():
-        if exploits:
-            print(f"Exploits found for CVE {cve_id}:")
-            exploit_json_output = json.dumps(exploits)
-            exploit = {"exploit": [exploit_json_output]}
-            return exploit
+    cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
+    exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
+    if exploit_results:
+        # Convert exploit results to JSON format
+        exploit_json_output = json.dumps(exploit_results)
+        return {"exploit": [exploit_json_output]}
+    else:
+        # Return an empty object or some message if no exploits were found
+        return jsonify({"exploit": {}})
 
 
 # -------------------------------Below function is to get scan resule in a json file---------------------

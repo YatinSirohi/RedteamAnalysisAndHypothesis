@@ -116,9 +116,9 @@ const ReconExt = () => {
         throw new Error("Failed to fetch data");
       }
       const jsonData = await response.json();
-      const parsedData = JSON.parse(jsonData.exploit);
-      console.log(parsedData);
-      setExploitData({ exploit: parsedData });
+      const parsedExploitData = JSON.parse(jsonData.exploit[0]);
+      console.log(parsedExploitData);
+      setExploitData({ exploit: parsedExploitData });
     } catch (error) {
       console.log(error);
     } finally {
@@ -283,29 +283,67 @@ const ReconExt = () => {
             </Button>
           </div>
         )}
-        {exploitData &&
-        exploitData.exploit &&
-        exploitData.exploit.length > 0 ? (
+        {exploitData && exploitData.exploit ? (
           <div className="exploit-data">
             <h2 className="exploit-header">Exploit Details:</h2>
             <ul>
-              {exploitData.exploit.map((exploitItem, index) => (
-                <li key={index}>
-                  <strong>ID:</strong> {exploitItem.id}
-                  <br />
-                  <strong>description:</strong> {exploitItem.description}
-                  <br />
-                  <strong>type:</strong> {exploitItem.type}
-                  <br />
-                  <strong>platform:</strong> {exploitItem.platform}
-                  <br />
-                  <strong>verified:</strong> {exploitItem.verified}
-                  <br />
-                  <strong>port:</strong> {exploitItem.port}
-                  <br />
-                  <strong>link:</strong> {exploitItem.link}
-                </li>
-              ))}
+              {Object.entries(exploitData.exploit).map(
+                ([cveId, exploitItem], index) => (
+                  <li key={index}>
+                    <strong>CVE:</strong> {cveId || "N/A"}
+                    <br />
+                    <strong>Product:</strong> {exploitItem.product || "N/A"}
+                    <br />
+                    <strong>Service:</strong> {exploitItem.service || "N/A"}
+                    <br />
+                    <strong>Description:</strong>{" "}
+                    {exploitItem.description || "N/A"}
+                    <br />
+                    {/* Check if there are any exploits for this CVE */}
+                    {exploitItem.exploits &&
+                    Object.keys(exploitItem.exploits).length > 0 ? (
+                      <div>
+                        <h5 style={{ color: "red" }}>
+                          <strong>Exploits:</strong>
+                        </h5>
+                        {Object.entries(exploitItem.exploits).map(
+                          ([exploitId, details]) => (
+                            <div key={exploitId}>
+                              <strong>Exploit ID:</strong> {details.id || "N/A"}
+                              <br />
+                              <strong>Description:</strong>{" "}
+                              {details.description || "N/A"}
+                              <br />
+                              <strong>Type:</strong> {details.type || "N/A"}
+                              <br />
+                              <strong>Platform:</strong>{" "}
+                              {details.platform || "N/A"}
+                              <br />
+                              <strong>Verified:</strong>{" "}
+                              {details.verified === 1 ? "Yes" : "No"}
+                              <br />
+                              <strong>Port:</strong> {details.port || "N/A"}
+                              <br />
+                              <strong>Link:</strong>{" "}
+                              <a
+                                href={details.link || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {details.link || "N/A"}
+                              </a>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    ) : (
+                      <div>
+                        <strong>No exploits found for this CVE.</strong>
+                      </div>
+                    )}
+                  </li>
+                )
+              )}
             </ul>
           </div>
         ) : null}
