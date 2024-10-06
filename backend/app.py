@@ -3,6 +3,7 @@ from flask_cors import CORS
 import reconExternalp2
 import json
 import validatehypo
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -106,6 +107,25 @@ def hypthesis():
     print(json.dumps(hypothesis, indent=4))
     return hypothesis
 
+UPLOAD_FOLDER = '../backend/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and file.filename.endswith('.json'):
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(file_path)
+        return jsonify({'success': True, 'message': 'File saved successfully'}), 200
+    else:
+        return jsonify({'error': 'Invalid file format, only JSON allowed'}), 400
 
 # -------------------------------Below function is to get scan resule in a json file---------------------
 

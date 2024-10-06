@@ -8,6 +8,7 @@ import AttackTree from "./components/AttackTree";
 import Docs from "./components/Docs";
 import Home from "./components/Home";
 import Hypothesis from "./components/Hypothesis";
+import ValidateHypothesis from "./components/ValidateHypothesis";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               <Route path="/RepresentState" element={<RepresentState />} />
               <Route path="/AttackTree" element={<AttackTree />} />
               <Route path="/Hypothesis" element={<Hypothesis />} />
+              <Route path="/ValidateHypothesis" element={<ValidateHypothesis />} />
             </Routes>
           </div>
         </div>
