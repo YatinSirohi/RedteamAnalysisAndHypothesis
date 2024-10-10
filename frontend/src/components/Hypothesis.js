@@ -98,7 +98,8 @@ const Hypothesis = () => {
           <div className="hypothesis-list">
             {hypothesisData.map((item, index) => (
               <div key={index} className="hypothesis-item">
-                <strong>Hypothesis {index + 1}:</strong> {item.Hypothesis}
+                <strong>Hypothesis {index + 1}:</strong> {item.Hypothesis}<br/>
+                <br/>
               </div>
             ))}
           </div>
