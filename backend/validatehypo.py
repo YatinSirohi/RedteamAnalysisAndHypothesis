@@ -366,8 +366,8 @@ def validate_hypotheses(hypotheses, logs):
             validated_hypotheses.append(
                 {
                     "Hypothesis": hypothesis,
-                    "Matching Logs": matching_logs,  # Store all matching logs
-                    "Matching Keywords": matching_keywords,
+                    "MatchingLogs": matching_logs,  # Store all matching logs
+                    "MatchingKeywords": matching_keywords,
                 }
             )
 

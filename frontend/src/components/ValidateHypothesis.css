@@ -29,7 +29,6 @@
   }
   
   .submit {
-    margin-top: 1rem;
     padding: 0.75rem 1.5rem;
     background-color: #f1c40f; 
     color: #fff;
@@ -38,8 +37,11 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    width: 100%;
+    width: 50%;
     text-align: center;
+    display: block;
+    margin: auto;
+    margin-top: 1rem;
   }
   
   .submit:hover {
@@ -48,7 +50,6 @@
   }
 
   .validate-submit {
-    margin-top: 1rem;
     padding: 0.75rem 1.5rem;
     background-color: #2caadf; 
     color: #fff;
@@ -57,8 +58,10 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;
-    width: 100%;
-    text-align: center;
+    width: 50%;
+    display: block;
+    margin: auto;
+    margin-top: 1rem;
   }
   
   .validate-submit:hover {
@@ -90,5 +93,29 @@
     font-size: 1.1rem;
     margin-top: 1rem;
     text-align: center;
+  }
+  
+  .ip-details {
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    flex-wrap: wrap;          
+    gap: 1rem;               
+    margin-top: 1rem;       
+  }
+  
+  .ip-details input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-width: 100%;          
+    box-sizing: border-box;    
+  }
+  
+  .ip-details text {
+    font-size: 1.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
   }
   

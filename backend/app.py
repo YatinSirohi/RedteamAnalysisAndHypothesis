@@ -94,6 +94,7 @@ def graph_of_exploit():
     attack_tree_list.append(attack_tree)
     return attack_tree_list
 
+
 @app.route("/Reconext/hypothesis", methods=["GET"])
 def hypthesis():
     target_ip = request.args.get("target_ip")
@@ -107,13 +108,14 @@ def hypthesis():
     print(json.dumps(hypothesis, indent=4))
     return hypothesis
 
+
 UPLOAD_FOLDER = '../backend/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
+        return jsonify({'error': 'No file'}), 400
 
     file = request.files['file']
 
@@ -126,6 +128,22 @@ def upload_file():
         return jsonify({'success': True, 'message': 'File saved successfully'}), 200
     else:
         return jsonify({'error': 'Invalid file format, only JSON allowed'}), 400
+    
+
+@app.route('/reconext/validatehypotheses', methods=['GET'])
+def validate_hypotheses_api():
+    target_ip = request.args.get("target_ip")
+    cidr = request.args.get("cidr") 
+    scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
+    cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
+    exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
+    attack_tree = validatehypo.generate_attack_tree(exploit_results)
+    hypotheses = validatehypo.generate_hypotheses(attack_tree)
+    log_file_path = "./uploads/windowslogs.json"
+    logs = validatehypo.load_windows_logs(log_file_path)
+    print("Validating hypotheses based on logs...")
+    validated_hypotheses = validatehypo.validate_hypotheses(hypotheses, logs)
+    return validated_hypotheses
 
 # -------------------------------Below function is to get scan resule in a json file---------------------
 
