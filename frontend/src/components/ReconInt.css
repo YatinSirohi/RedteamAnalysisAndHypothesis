@@ -1,0 +1,29 @@
+
+.instructions-container {
+    margin-top: 20px;
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+.h1-heading {
+    text-align: center;
+    font-size: 24px;
+    color: rgb(211, 17, 43);
+    margin-bottom: 20px;
+  }
+  
+.sub-heading {
+    font-size: 20px;
+    color: rgb(224, 123, 15);
+    border-bottom: 2px solid #FF6347;
+    padding-bottom: 5px;
+  }
+
+.open-terminal-btn {
+    margin-bottom: 1rem;
+}
+  
+
+  
