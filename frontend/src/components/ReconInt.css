@@ -19,6 +19,7 @@
     color: rgb(224, 123, 15);
     border-bottom: 2px solid #FF6347;
     padding-bottom: 5px;
+    margin-top: 2rem;
   }
 
 .open-terminal-btn {

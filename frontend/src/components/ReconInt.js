@@ -3,13 +3,11 @@ import Button from "react-bootstrap/Button";
 import "./ReconInt.css";
 
 const ReconInt = () => {
-  const openTerminal = async () => {
+  const openReconInt = async () => {
     try {
-      const response = await fetch("http://localhost:5000/open-terminal");
-      const data = await response.text();
-      console.log(data);
+      window.open("http://localhost:5001/", "_blank");
     } catch (error) {
-      console.error("Error opening terminal:", error);
+      console.error("Error opening:", error);
     }
   };
 
@@ -21,9 +19,9 @@ const ReconInt = () => {
           className="open-terminal-btn"
           type="submit"
           size="sm"
-          onClick={openTerminal}
+          onClick={openReconInt}
         >
-          Start Internal-Recon on Terminal
+          Start Internal-Recon
         </Button>
         <p
           style={{
@@ -35,8 +33,7 @@ const ReconInt = () => {
           }}
         >
           <strong>
-            NOTE: Please read the instructions below to use internal-recon module on
-            Terminal. Click on the button to open the terminal
+            NOTE: Please read the instructions below to use internal-recon module. Click on the button to open the module
           </strong>
         </p>
 

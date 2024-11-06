@@ -156,6 +156,10 @@ def open_terminal():
         subprocess.Popen(f'start cmd /K "{message} && cd /d {react_app_directory}"', shell=True)
     return "Terminal opened", 200
 
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
+
+
 # -------------------------------Below function is to get scan resule in a json file---------------------
 
 
@@ -232,5 +236,3 @@ def open_terminal():
 #     return "JSON files created"
 
 
-# if __name__ == "__main__":
-#     app.run(debug=True, host="0.0.0.0")
