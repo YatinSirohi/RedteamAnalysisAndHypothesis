@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Alert from "react-bootstrap/Alert";
@@ -11,8 +11,13 @@ const Hypothesis = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [hypothesisData, setHypothesisData] = useState(null);
+  const [hypothesisData, setHypothesisData] = useState(JSON.parse(localStorage.getItem("hypothesisData")) || null);
   const [gethypothesis, setGethypothesis] = useState(false);
+
+  useEffect(() => {
+    //to save the data locally
+    localStorage.setItem("hypothesisData", JSON.stringify(hypothesisData));
+  }, [hypothesisData]);
 
   const clearData = () => {
     setHypothesisData(null);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import "./AttackTree.css";
@@ -8,16 +8,28 @@ import Alert from "react-bootstrap/Alert";
 import "./Loader.css";
 
 const AttackTree = () => {
-  const [targetIP, setTargetIP] = useState("");
+  const [targetIP, setTargetIP] = useState(JSON.parse(localStorage.getItem("targetIP")) || "");
   const [cidr, setCidr] = useState("");
   const [loadingGraph, setLoadingGraph] = useState(false);
-  const [exploitGraphData, setExploitGraphData] = useState(null);
+  const [exploitGraphData, setExploitGraphData] = useState(JSON.parse(localStorage.getItem("exploitGraphData")) || null);
   const [showAlert, setShowAlert] = useState(false);
   const [grapherror, setGrapherror] = useState(false);
+
+  useEffect(() => {
+    //to save the data locally
+    localStorage.setItem("exploitGraphData", JSON.stringify(exploitGraphData));
+  }, [exploitGraphData]);
+
+  useEffect(() => {
+    //to save the data locally
+    localStorage.setItem("targetIP", JSON.stringify(targetIP));
+  }, [targetIP]);
 
   const clearGraph = () => {
     setExploitGraphData(null);
     setLoadingGraph(false);
+    setTargetIP("");
+    setCidr("");
   };
 
   const fetchExploitData = async () => {
@@ -53,13 +65,6 @@ const AttackTree = () => {
     physics: {
       enabled: true,
     },
-    repulsion: {
-      nodeDistance: 200,
-      centralGravity: 0.1,
-      springLength: 200,
-      springConstant: 0.05,
-    },
-    solver: "repulsion",
   };
 
   const nodes = [];
@@ -68,17 +73,9 @@ const AttackTree = () => {
 
   if (exploitGraphData) {
     exploitGraphData.forEach((cveItem) => {
-      const {
-        CVE,
-        // "CVE Description": description,
-        // IP,
-        Product,
-        Service,
-        Exploits,
-      } = cveItem;
+      const { CVE, Product, Service, Exploits } = cveItem;
 
       const cveNodeId = `CVE-${CVE}`;
-      // Create CVE node
       if (!nodeSet.has(cveNodeId)) {
         nodes.push({
           id: cveNodeId,
@@ -88,19 +85,6 @@ const AttackTree = () => {
         nodeSet.add(cveNodeId);
       }
 
-      // Create node for CVE description
-      // nodes.push({
-      //   id: `Desc-${CVE}`,
-      //   label: description,
-      //   color: "lightgray",
-      // });
-
-      // edges.push({
-      //   from: cveNodeId,
-      //   to: `Desc-${CVE}`,
-      //   label: "Description",
-      // });
-
       const productNodeId = `Product-${CVE}`;
       if (!nodeSet.has(productNodeId)) {
         nodes.push({
@@ -108,7 +92,6 @@ const AttackTree = () => {
           label: Product,
           color: "lightgreen",
         });
-        // nodeSet.add(productNodeId);
       }
 
       edges.push({
@@ -125,7 +108,6 @@ const AttackTree = () => {
           label: Service,
           color: "lightblue",
         });
-        // nodeSet.add(serviceNodeId);
       }
 
       edges.push({
@@ -196,60 +178,66 @@ const AttackTree = () => {
   return (
     <>
       <div className="center-container">
-        <div className="graph-container">
-          <h1 className="graph-title">Attack Tree Graphical Representation</h1>
-          {showAlert && (
-            <Alert
-              variant="danger"
-              onClose={() => setShowAlert(false)}
-              dismissible
+        {!exploitGraphData && (
+          <div className="graph-container">
+            <h1 className="graph-title">
+              Attack Tree Graphical Representation
+            </h1>
+            {showAlert && (
+              <Alert
+                variant="danger"
+                onClose={() => setShowAlert(false)}
+                dismissible
+              >
+                <Alert.Heading>
+                  Target IP and CIDR cannot be blank
+                </Alert.Heading>
+                <p>Please enter target IP and CIDR and try again!</p>
+              </Alert>
+            )}
+            <p>
+              <strong>
+                Enter the IP address and CIDR to generate the graph having
+                relationships between ports, vulnerabilities, exploits, etc.
+              </strong>
+            </p>
+            <input
+              type="text"
+              value={targetIP}
+              onChange={(e) => setTargetIP(e.target.value)}
+              placeholder="Enter target IP"
+            />
+            <text>
+              <strong> /</strong>
+            </text>
+            <input
+              style={{ marginLeft: "1vh" }}
+              type="number"
+              value={cidr}
+              onChange={(e) => setCidr(e.target.value)}
+              placeholder="Enter CIDR"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              onClick={fetchExploitData}
+              style={{ marginLeft: "1vh" }}
             >
-              <Alert.Heading>Target IP and CIDR cannot be blank</Alert.Heading>
-              <p>Please enter target IP and CIDR and try again!</p>
-            </Alert>
-          )}
-          <p>
-            <strong>
-              Enter the IP address and CIDR to generate the graph having
-              relationships between ports, vulnerabilities, exploits, etc.
-            </strong>
-          </p>
-          <input
-            type="text"
-            value={targetIP}
-            onChange={(e) => setTargetIP(e.target.value)}
-            placeholder="Enter target IP"
-          />
-          <text>
-            <strong> /</strong>
-          </text>
-          <input
-            style={{ marginLeft: "1vh" }}
-            type="number"
-            value={cidr}
-            onChange={(e) => setCidr(e.target.value)}
-            placeholder="Enter CIDR"
-          />
-          <Button
-            type="submit"
-            size="sm"
-            onClick={fetchExploitData}
-            style={{ marginLeft: "1vh", marginTop: "1vh" }}
-          >
-            Generate Exploit Graph
-          </Button>
-        </div>
+              Generate Exploit Graph
+            </Button>
+          </div>
+        )}
         {loadingGraph && (
           <div className="loader-container">
             <Loader />
           </div>
         )}
         {exploitGraphData && (
-          <div className="graph">
+          <div style={{ marginTop: "15rem" }} className="graph">
             <Graph
               graph={{ nodes, edges }}
               options={graphOptions}
-              style={{ height: "500px", width: "100%" }}
+              style={{ height: "800px", width: "100%" }}
             />
           </div>
         )}
@@ -259,7 +247,7 @@ const AttackTree = () => {
             <Button size="sm" variant="danger" onClick={clearGraph}>
               Clear Graph
             </Button>
-            <p style={{ marginTop: "2rem" }}>
+            <p style={{ marginTop: "2rem", alignItems: "center" }}>
               <Badge bg="success">NOTES:</Badge>
               <br />
               1. The above graph is for IP: {targetIP}.<br />

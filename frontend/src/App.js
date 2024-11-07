@@ -20,8 +20,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/Docs" element={<Docs />} />
-              <Route path="/ReconInt" element={<ReconInt />} />
               <Route path="/ReconExt" element={<ReconExt />} />
+              <Route path="/ReconInt" element={<ReconInt />} />
               <Route path="/RepresentState" element={<RepresentState />} />
               <Route path="/AttackTree" element={<AttackTree />} />
               <Route path="/Hypothesis" element={<Hypothesis />} />

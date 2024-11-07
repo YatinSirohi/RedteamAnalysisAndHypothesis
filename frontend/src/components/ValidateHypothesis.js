@@ -5,7 +5,7 @@ import Loader from "./Loader";
 const ValidateHypothesis = () => {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("initial");
-  const [hypodata, sethypodata] = useState(null);
+  const [hypodata, setHypoData] = useState(null);
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
   const [validateHypothesis, setValidateHypothesis] = useState(false);
@@ -49,7 +49,7 @@ const ValidateHypothesis = () => {
   };
 
   const fetchValidateHypotheses = async () => {
-    sethypodata(null);
+    setHypoData(null);
     setValidateHypothesis(true);
     try {
       const response = await fetch(
@@ -60,7 +60,7 @@ const ValidateHypothesis = () => {
       }
       const jsonData = await response.json();
       console.log(jsonData);
-      sethypodata(jsonData);
+      setHypoData(jsonData);
     } catch (error) {
       console.log(error);
     }

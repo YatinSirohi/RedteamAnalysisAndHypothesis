@@ -1,4 +1,4 @@
-import React, { useState }  from 'react'
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import "./AttackTree.css";
 import Graph from "react-graph-vis";
@@ -8,9 +8,14 @@ import Alert from "react-bootstrap/Alert";
 const RepresentState = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
-  const [graphData, setGraphData] = useState(null);
+  const [graphData, setGraphData] = useState(JSON.parse(localStorage.getItem("graphData")) || null);
   const [loadingGraph, setLoadingGraph] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    //to save the data locally
+    localStorage.setItem("graphData", JSON.stringify(graphData));
+  }, [graphData]);
 
   const clearGraph = () => {
     setGraphData(null);
@@ -135,8 +140,8 @@ const RepresentState = () => {
   }
 
   return (
-    <>
-      <div className="center-container">
+    <div className="center-container">
+      {!graphData && (
         <div className="graph-container">
           <h1 className="graph-title">State Graphical Representation</h1>
           {showAlert && (
@@ -151,7 +156,7 @@ const RepresentState = () => {
           )}
           <p>
             <strong>
-              Enter the IP address and CIDR to generate the graph having
+              Enter the IP address and CIDR to generate the graph showing
               relationships between ports, vulnerabilities, services, etc.
             </strong>
           </p>
@@ -161,9 +166,7 @@ const RepresentState = () => {
             onChange={(e) => setTargetIP(e.target.value)}
             placeholder="Enter target IP"
           />
-          <text>
-            <strong> /</strong>
-          </text>
+          <strong> /</strong>
           <input
             style={{ marginLeft: "1vh" }}
             type="number"
@@ -175,31 +178,28 @@ const RepresentState = () => {
             Generate Graph
           </Button>
         </div>
-        {loadingGraph && (
-          <div>
-            <Loader />
+      )}
+      {loadingGraph && <div className="loader-container"><Loader /></div>}
+      {graphData && (
+        <>
+          <div style={{ marginTop: "10rem" }} className="graph-display">
+            <div className="graph">
+              <Graph
+                graph={{ nodes, edges }}
+                options={graphOptions}
+                style={{ height: "100%", width: "100%" }}
+              />
+            </div>
           </div>
-        )}
-        {(graphData) && (
-          <div className="graph">
-            <Graph
-              graph={{ nodes, edges }}
-              options={graphOptions}
-              style={{ height: "500px", width: "100%" }}
-            />
-          </div>
-        )}
-        {(graphData) && (
-          <div className="clear-button">
+          <div style={{ marginBottom: "30vh"}} className="clear-button">
             <Button size="sm" variant="danger" onClick={clearGraph}>
               Clear Graph
             </Button>
           </div>
-        )}
-      </div>
-    </>
+        </>
+      )}
+    </div>
   );
 };
 
-
-export default RepresentState
+export default RepresentState;
