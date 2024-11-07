@@ -8,7 +8,9 @@ import Alert from "react-bootstrap/Alert";
 const RepresentState = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
-  const [graphData, setGraphData] = useState(JSON.parse(localStorage.getItem("graphData")) || null);
+  const [graphData, setGraphData] = useState(
+    JSON.parse(localStorage.getItem("graphData")) || null
+  );
   const [loadingGraph, setLoadingGraph] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -179,7 +181,11 @@ const RepresentState = () => {
           </Button>
         </div>
       )}
-      {loadingGraph && <div className="loader-container"><Loader /></div>}
+      {loadingGraph && (
+        <div className="loader-container">
+          <Loader />
+        </div>
+      )}
       {graphData && (
         <>
           <div style={{ marginTop: "10rem" }} className="graph-display">
@@ -191,7 +197,7 @@ const RepresentState = () => {
               />
             </div>
           </div>
-          <div style={{ marginBottom: "30vh"}} className="clear-button">
+          <div style={{ marginBottom: "30vh" }} className="clear-button">
             <Button size="sm" variant="danger" onClick={clearGraph}>
               Clear Graph
             </Button>

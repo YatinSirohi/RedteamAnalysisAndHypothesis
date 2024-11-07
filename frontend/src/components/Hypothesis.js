@@ -11,7 +11,9 @@ const Hypothesis = () => {
   const [targetIP, setTargetIP] = useState("");
   const [cidr, setCidr] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [hypothesisData, setHypothesisData] = useState(JSON.parse(localStorage.getItem("hypothesisData")) || null);
+  const [hypothesisData, setHypothesisData] = useState(
+    JSON.parse(localStorage.getItem("hypothesisData")) || null
+  );
   const [gethypothesis, setGethypothesis] = useState(false);
 
   useEffect(() => {
@@ -103,8 +105,9 @@ const Hypothesis = () => {
           <div className="hypothesis-list">
             {hypothesisData.map((item, index) => (
               <div key={index} className="hypothesis-item">
-                <strong>Hypothesis {index + 1}:</strong> {item.Hypothesis}<br/>
-                <br/>
+                <strong>Hypothesis {index + 1}:</strong> {item.Hypothesis}
+                <br />
+                <br />
               </div>
             ))}
           </div>

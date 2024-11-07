@@ -8,10 +8,14 @@ import Alert from "react-bootstrap/Alert";
 import "./Loader.css";
 
 const AttackTree = () => {
-  const [targetIP, setTargetIP] = useState(JSON.parse(localStorage.getItem("targetIP")) || "");
+  const [targetIP, setTargetIP] = useState(
+    JSON.parse(localStorage.getItem("targetIP")) || ""
+  );
   const [cidr, setCidr] = useState("");
   const [loadingGraph, setLoadingGraph] = useState(false);
-  const [exploitGraphData, setExploitGraphData] = useState(JSON.parse(localStorage.getItem("exploitGraphData")) || null);
+  const [exploitGraphData, setExploitGraphData] = useState(
+    JSON.parse(localStorage.getItem("exploitGraphData")) || null
+  );
   const [showAlert, setShowAlert] = useState(false);
   const [grapherror, setGrapherror] = useState(false);
 
@@ -56,7 +60,11 @@ const AttackTree = () => {
 
   const graphOptions = {
     layout: {
-      hierarchical: "grid",
+      hierarchical: {
+        enabled: true,
+        levelSeparation: 200,
+        nodeSpacing: 500,
+      },
     },
     edges: {
       arrows: "to",

@@ -110,31 +110,32 @@ def hypthesis():
     return hypothesis
 
 
-UPLOAD_FOLDER = '../backend/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = "../backend/uploads"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-@app.route('/upload', methods=['POST'])
+
+@app.route("/upload", methods=["POST"])
 def upload_file():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file'}), 400
+    if "file" not in request.files:
+        return jsonify({"error": "No file"}), 400
 
-    file = request.files['file']
+    file = request.files["file"]
 
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
+    if file.filename == "":
+        return jsonify({"error": "No selected file"}), 400
 
-    if file and file.filename.endswith('.json'):
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    if file and file.filename.endswith(".json"):
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
         file.save(file_path)
-        return jsonify({'success': True, 'message': 'File saved successfully'}), 200
+        return jsonify({"success": True, "message": "File saved successfully"}), 200
     else:
-        return jsonify({'error': 'Invalid file format, only JSON allowed'}), 400
-    
+        return jsonify({"error": "Invalid file format, only JSON allowed"}), 400
 
-@app.route('/reconext/validatehypotheses', methods=['GET'])
+
+@app.route("/reconext/validatehypotheses", methods=["GET"])
 def validate_hypotheses_api():
     target_ip = request.args.get("target_ip")
-    cidr = request.args.get("cidr") 
+    cidr = request.args.get("cidr")
     scan_results = validatehypo.perform_nmap_scan(target_ip, cidr)
     cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
     exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
@@ -146,15 +147,21 @@ def validate_hypotheses_api():
     validated_hypotheses = validatehypo.validate_hypotheses(hypotheses, logs)
     return validated_hypotheses
 
-@app.route('/open-terminal', methods=['GET'])
+
+@app.route("/open-terminal", methods=["GET"])
 def open_terminal():
     if platform.system() == "Windows":
         # Change to the directory where the React app is running
         react_app_directory = r"./internal-recon"
-        message = "echo ################  Internal Recon Module terminal  ################"
+        message = (
+            "echo ################  Internal Recon Module terminal  ################"
+        )
         # Command to open the terminal in the specified directory
-        subprocess.Popen(f'start cmd /K "{message} && cd /d {react_app_directory}"', shell=True)
+        subprocess.Popen(
+            f'start cmd /K "{message} && cd /d {react_app_directory}"', shell=True
+        )
     return "Terminal opened", 200
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
@@ -234,5 +241,3 @@ if __name__ == "__main__":
 #         json.dump(exploit_formatted, f)
 
 #     return "JSON files created"
-
-

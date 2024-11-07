@@ -25,7 +25,10 @@ function App() {
               <Route path="/RepresentState" element={<RepresentState />} />
               <Route path="/AttackTree" element={<AttackTree />} />
               <Route path="/Hypothesis" element={<Hypothesis />} />
-              <Route path="/ValidateHypothesis" element={<ValidateHypothesis />} />
+              <Route
+                path="/ValidateHypothesis"
+                element={<ValidateHypothesis />}
+              />
             </Routes>
           </div>
         </div>

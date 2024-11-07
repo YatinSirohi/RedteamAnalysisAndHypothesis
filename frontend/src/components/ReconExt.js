@@ -191,7 +191,7 @@ const ReconExt = () => {
                   </li>
                 ))}
               </ul>
-              <p style={{color:"blue"}}>
+              <p style={{ color: "blue" }}>
                 <strong>Operating System </strong>
                 {item.OS_CPE}
               </p>
@@ -239,7 +239,9 @@ const ReconExt = () => {
         )}
         {cveData && cveData.cve && cveData.cve.length > 0 ? (
           <div className="cve-data">
-            <h2 className="cve-header">CVE (Common Vulnerabilities and Exposures) Details:</h2>
+            <h2 className="cve-header">
+              CVE (Common Vulnerabilities and Exposures) Details:
+            </h2>
             <ul>
               {cveData.cve.map((cveItem, index) => (
                 <li key={index}>
@@ -337,7 +339,7 @@ const ReconExt = () => {
                         )}
                       </div>
                     ) : (
-                      <div style={{color: "blue"}}>
+                      <div style={{ color: "blue" }}>
                         <strong>No exploits found for this CVE.</strong>
                       </div>
                     )}

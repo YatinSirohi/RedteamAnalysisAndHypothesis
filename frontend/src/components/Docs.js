@@ -26,6 +26,41 @@ const Docs = () => {
           Setup Instructions
         </h2>
         <ol style={{ paddingLeft: "20px" }}>
+          Clone the code using the below command (Git must be installed):
+          <pre
+            style={{
+              backgroundColor: "#e0e0e0",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <code>
+              git clone
+              https://github.com/YatinSirohi/RedteamAnalysisAndHypothesis.git
+            </code>
+          </pre>
+          From the root folder of the application, run the below commands:
+          <pre
+            style={{
+              backgroundColor: "#e0e0e0",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <code>.\install_packages.bat</code>
+          </pre>
+          <pre
+            style={{
+              backgroundColor: "#e0e0e0",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <code>.\start_servers.bat</code>
+          </pre>
+          <h3 style={{ margin: "2rem" }}>
+            Alternatively, to install packages individually:
+          </h3>
           <li style={{ marginBottom: "15px" }}>
             Clone the code using the below command (Git must be installed):
             <pre
@@ -161,6 +196,16 @@ const Docs = () => {
         >
           If you face any error saying any Python module is not reachable,
           please try changing the Python interpreter.
+        </p>
+        <p
+          style={{
+            backgroundColor: "#ffe4e1",
+            padding: "10px",
+            borderRadius: "5px",
+          }}
+        >
+          Look at the terminals to find the errors during running or
+          installation process.
         </p>
         <h3
           style={{

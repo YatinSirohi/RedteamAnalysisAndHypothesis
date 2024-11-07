@@ -33,7 +33,8 @@ const ReconInt = () => {
           }}
         >
           <strong>
-            NOTE: Please read the instructions below to use internal-recon module. Click on the button to open the module
+            NOTE: Please read the instructions below to use internal-recon
+            module. Click on the button to open the module
           </strong>
         </p>
 
@@ -69,9 +70,18 @@ const ReconInt = () => {
             </li>
             <li>
               <strong>Command to Run:</strong>
-              <pre style={{ backgroundColor: "#e0e0e0", padding: "10px", borderRadius: "5px" }}>
-                <code>python3 InternalRecon.py -u &lt;username&gt; -p &lt;password&gt;
-                -d &lt;domain&gt; -i &lt;dc_ip&gt; -s &lt;scope&gt;</code>
+              <pre
+                style={{
+                  backgroundColor: "#e0e0e0",
+                  padding: "10px",
+                  borderRadius: "5px",
+                }}
+              >
+                <code>
+                  python3 InternalRecon.py -u &lt;username&gt; -p
+                  &lt;password&gt; -d &lt;domain&gt; -i &lt;dc_ip&gt; -s
+                  &lt;scope&gt;
+                </code>
               </pre>
             </li>
           </ul>
