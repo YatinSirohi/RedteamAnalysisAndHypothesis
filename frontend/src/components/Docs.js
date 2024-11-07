@@ -232,6 +232,12 @@ const Docs = () => {
           <li style={{ marginBottom: "15px" }}>
             Make sure you have python, NodeJS installed in your system.
           </li>
+          <li style={{ marginBottom: "15px" }}>
+            The application is made for ethical hackers/Pen testers and should
+            not be used for any
+            <br />
+            illegal/unethical activity.
+          </li>
         </p>
       </div>
     </div>
