@@ -38,8 +38,6 @@ cyber_attack_keywords = set(
         "injection",
         "password",
         "detected",
-        "privilege",
-        "escalation",
         "termination",
         "EoTS",
         "DNS",
