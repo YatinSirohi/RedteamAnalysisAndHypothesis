@@ -1,14 +1,14 @@
 Installing and running on a Windows machine
 
-1.	The user needs to clone the code using the below command.
+1.	The user needs to clone the code using the below command.<br/>
 git clone https://github.com/YatinSirohi/RedteamAnalysisAndHypothesis.git
 
-2.	Open the root folder of the application on a terminal. You should have access to install_packages.bat and start_servers.bat files.
+3.	Open the root folder of the application on a terminal. You should have access to install_packages.bat and start_servers.bat files.
 
-3.	Install the necessary packages by running the below command.
+4.	Install the necessary packages by running the below command.
 .\install_packages.bat
 
-4.	When you see a message saying, “Python packages have been installed” and “Node packages have been installed” on two separate terminals. Close those terminals, and run the below command to start the application:
+5.	When you see a message saying, “Python packages have been installed” and “Node packages have been installed” on two separate terminals. Close those terminals, and run the below command to start the application:
 .\start_servers.bat
 
 The application will be launched on localhost:3000, with flask servers running on terminals.
