@@ -22,10 +22,14 @@ Sudo apt install gnome-terminal
 
 3.	Open the root folder of the application on a terminal. You should have access to install_packages.sh and start_servers.sh files.
 
-4.	Install the necessary packages by running the below command.<br/>
+5.	Make install_packages.sh and start_servers.sh files executables using the below commands:<br/>
+Sudo chmod +x install_packages.sh
+Sudo chmod +x start_servers.sh
+
+6.	Install the necessary packages by running the below command.<br/>
 ./install_packages.sh
 
-5.	When you see a message saying, “All packages installed successfully”, close the terminal and run the below command to start the application:<br/>
+7.	When you see a message saying, “All packages installed successfully”, close the terminal and run the below command to start the application:<br/>
 ./start_servers.sh
 
 Troubleshooting
