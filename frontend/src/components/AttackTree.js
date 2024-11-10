@@ -50,7 +50,7 @@ const AttackTree = () => {
     if (response.ok) {
       const exploitData = await response.json();
       console.log("Exploit Graph data:", exploitData);
-      setExploitGraphData(exploitData[0][targetIP]); // Adjusted for your data structure
+      setExploitGraphData(exploitData[0][targetIP]);
     } else {
       console.error("Failed to generate exploit graph:", response.statusText);
       setGrapherror(true);

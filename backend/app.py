@@ -86,12 +86,7 @@ def graph_of_exploit():
     cve_ids = validatehypo.get_cve_ids_and_descriptions(scan_results)
     exploit_results = validatehypo.search_exploits_for_cves(cve_ids)
     attack_tree_list = []
-    # exploit_list = []
-    # for key, value in exploit_results.items():
-    #     exploit_list.append({"cve_id": key, "exploits": value})
-    # return exploit_list
     attack_tree = validatehypo.generate_attack_tree(exploit_results)
-    # attack_tree_json = json.dumps(attack_tree)
     attack_tree_list.append(attack_tree)
     return attack_tree_list
 
@@ -167,7 +162,7 @@ if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
 
 
-# -------------------------------Below function is to get scan resule in a json file---------------------
+# -------------------------------Below function is to get scan resule in a json file IGNORE---------------------
 
 
 # @app.route("/Reconext/CommonJson", methods=["GET"])
